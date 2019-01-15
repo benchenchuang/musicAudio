@@ -1,14 +1,5 @@
 
-/**
- *
- * 作者 月影 (QQ:253737688)
- * json 数据原创模拟 素材来自网络
- * 音乐外链生成 http://www.170mv.com/tool/song/
- * 酷狗        http://www.kuwo.cn/
- * LRC歌词     http://lrc.bzmtv.com/
- *
- */
-;(function($){
+(function($){
     var rotatetimer,    /* 旋转定时器 */
         isNext = false,  /* 播放结束是下一首还是暂停 */
         isloop = false,  /* 是否循环播放 */
@@ -116,17 +107,23 @@
     function prev() { 
         isPlay=false;            /*上一首  是否向上循环播放*/
         i>0 ? i-- :(isloop?i=lens-1:console.log('已经是最后一首了'));
-        play(i)
+        play(i);
+        music.ontimeupdate();
     }
     function next() {            /*下一首 是否向下循环播放*/
         isPlay=false;
         (i<=lens-2) ? i++ : (isloop ? i=0 : console.log('已经是最后一首了')) ;
-        play(i)
+        play(i);
+        music.ontimeupdate();
     }
 
     /*播放歌曲方法*/
     function play(j) {
-        $cover.css('background-image', "url(" + musList[j].cov + ")");  /* 更换对应歌曲海报 */
+        $cover.css({/* 更换对应歌曲海报 */
+            'background-image': "url(" + musList[j].cov + ")",
+            'transform': "rotate(0)"
+        });
+        angle=0;
         $music.attr('src', musList[j].voi);                             /* 更换对应歌曲链接 */
         $audioTitle.html(musList[j].tit);                               /* 更换对应歌曲名称 */
         $songList.find('.cur').removeClass('cur');
@@ -172,6 +169,9 @@
     /*拖拽进度条*/
     $scale.on('change', function() {
         music.currentTime = $scale.val();
+        music.ontimeupdate();
+        iplay();
+        updateLyric();
     });
 
     /*暂停状态*/
